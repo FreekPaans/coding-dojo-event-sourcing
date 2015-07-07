@@ -50,7 +50,17 @@ namespace NerdDinner.Controllers
 
         [Authorize, HttpPost]
         public ActionResult Cancel(int id) {
-            throw new NotImplementedException("Infi Coding Dojo TODO");
+            var dinner = dinnerRepository.Find(id);
+
+			NerdIdentity nerd = (NerdIdentity)User.Identity;
+
+            var publishedEvents = dinner.CancelRSVP(nerd.Name);
+
+            dinnerRepository.StoreEvents(publishedEvents);
+
+            dinnerRepository.SubmitChanges();
+
+            return Content("Thanks - we'll see you there!");
         }
 
         

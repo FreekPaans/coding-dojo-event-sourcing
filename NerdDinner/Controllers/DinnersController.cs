@@ -73,6 +73,18 @@ namespace NerdDinner.Controllers {
             return View(dinner);
         }
 
+
+		[Authorize]
+        public ActionResult ChangeAddress(int id, string newAddress, string changedReason) {
+            var dinner = dinnerRepository.Find(id);
+
+			var events = dinner.ChangeAddress(newAddress,changedReason);
+
+			dinnerRepository.StoreEvents(events);
+			dinnerRepository.SubmitChanges();
+
+			return Content("Thank you");
+        }
         //
         // GET: /Dinners/Edit/5
 
@@ -242,9 +254,6 @@ namespace NerdDinner.Controllers {
             return View("WebSlice", model.Take(5));
         }
 
-        [Authorize]
-        public ActionResult ChangeAddress(int id, string newAddress, string changedReason) {
-            throw new NotImplementedException("Infi Coding Dojo TODO");
-        }
+        
     }
 }

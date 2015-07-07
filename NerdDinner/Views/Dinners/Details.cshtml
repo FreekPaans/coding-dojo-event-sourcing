@@ -34,7 +34,7 @@
         <strong>Address:</strong> 
         <span class="location adr">
             <span class="extended-address">@(Model.Address)</span>
-            @if (Model.IsHostedBy(User.Identity.Name) && false /* TODO Infi Coding Dojo, not needed before assignment 3 */) {
+            @if (Model.IsHostedBy(User.Identity.Name)) {
                 <a href="#" class="open-extended-address-form">Change</a>
                 <form action="@Url.Action("ChangeAddress", new { id = Model.DinnerID })" class="extended-address-form" style="display: none">
                     New address: <br/>

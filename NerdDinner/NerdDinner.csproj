@@ -168,7 +168,9 @@
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\ServicesController.cs" />
     <Compile Include="Controllers\ViewSwitcherController.cs" />
+    <Compile Include="Events\AddressChanged.cs" />
     <Compile Include="Events\IEventData.cs" />
+    <Compile Include="Events\RSVPCanceled.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

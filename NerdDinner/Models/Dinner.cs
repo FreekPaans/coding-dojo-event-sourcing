@@ -120,6 +120,42 @@ namespace NerdDinner.Models {
             }
         }
 
+		internal ICollection<Event> CancelRSVP(string userId) {
+			try {
+				if(!IsUserRegistered(userId)) {
+					return new Event[0];
+				}
+				var rsvpCanceled = new RSVPCanceled {
+                    Name = userId,
+                    DinnerId = DinnerID
+                };
+
+				RaiseAndApply(rsvpCanceled);
+				
+				return this._publishedEvents.ToList();
+			}
+			finally {
+				this._publishedEvents.Clear();
+			}	
+		}
+
+		internal ICollection<Event> ChangeAddress(string newAddress,string changedReason) {
+			try {
+				var addressChanged = new AddressChanged {
+					NewAddress = newAddress,
+					Reason = changedReason
+				};
+
+				RaiseAndApply(addressChanged);
+
+				return _publishedEvents.ToList();
+
+			}
+			finally {
+				this._publishedEvents.Clear();
+			}
+		}
+
         private void RaiseAndApply(IEventData eventData) {
             var @event = MakeEvent(eventData);
             RaiseEvent(@event);
@@ -151,6 +187,25 @@ namespace NerdDinner.Models {
             rsvp.AttendeeName   = @event.Data.FriendlyName;
             rsvp.AttendeeNameId = @event.Data.Name;
             _rsvps.Add(rsvp);
+
+			_eventHistory.Add(string.Format("{0} {1} RSVPed", @event.DateTime,@event.Data.FriendlyName));
+        }
+
+		void ApplyEvent(Event<RSVPCanceled> @event) {
+            var rsvp = _rsvps.First(_=>_.AttendeeNameId == @event.Data.Name);
+			_rsvps.Remove(rsvp);
+			_eventHistory.Add(string.Format("{0} {1} canceled", @event.DateTime,rsvp.AttendeeName));
+        }
+
+		void ApplyEvent(Event<AddressChanged> @event) {
+            Address = @event.Data.NewAddress;
+
+			if(!string.IsNullOrWhiteSpace(@event.Data.Reason)) {
+				_eventHistory.Add(string.Format("{0} Address changed to: {1}, because of: {2}",@event.DateTime,@event.Data.NewAddress,@event.Data.Reason));
+			}
+			else {	
+				_eventHistory.Add(string.Format("{0} Address changed to: {1}",@event.DateTime,@event.Data.NewAddress));
+			}
         }
 
         
@@ -172,7 +227,11 @@ namespace NerdDinner.Models {
             return dinners;
         }
 
-    }
+
+
+
+		
+	}
 
 
     public class LocationDetail {
