@@ -83,7 +83,7 @@ namespace NerdDinner.Controllers {
 			dinnerRepository.StoreEvents(events);
 			dinnerRepository.SubmitChanges();
 
-			return Content("Thank you");
+			return RedirectToAction("Details", new { id = id});
         }
         //
         // GET: /Dinners/Edit/5
