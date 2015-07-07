@@ -31,6 +31,17 @@ namespace NerdDinner.Tests.CodingDojo
 
             AssertRSVPedInDinnerHistory("Address changed to: New Test Address Street 2, TestCity, because of: New venue", 1);
         }
+
+		[Test]
+        public void ChangeDinner_Action_Should_Redirect_To_Dinner()
+        {
+            var result = ChangeDinnerAddress("New Test Address Street 2, TestCity", asUser: "SomeUser", dinnerId: 1, reason: "New venue");
+
+            var routeValue = GetRedirectResultRouteValues(result);
+
+			Assert.AreEqual(1, routeValue["id"]);
+			Assert.AreEqual("Details", routeValue["action"]);
+        }
        
     }
 }

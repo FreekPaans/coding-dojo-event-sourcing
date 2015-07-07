@@ -36,10 +36,10 @@ namespace NerdDinner.Tests.CodingDojo
             controller.Register(dinnerId);
         }
 
-        private void ChangeDinnerAddress(string newAddress, string asUser, int dinnerId, string reason = null)
+        private ActionResult ChangeDinnerAddress(string newAddress, string asUser, int dinnerId, string reason = null)
         {
             var controller = CreateDinnersControllerAs(asUser);
-            controller.ChangeAddress(dinnerId, newAddress, reason);
+            return controller.ChangeAddress(dinnerId, newAddress, reason);
         }
 
         private void AssertDinnerAddress(string expectedAddress, int dinnerId)
