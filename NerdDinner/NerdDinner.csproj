@@ -191,6 +191,7 @@
     <Compile Include="Events\RSVPed.cs" />
     <Compile Include="Models\Dinner.cs" />
     <Compile Include="Models\DinnerRepository.cs" />
+    <Compile Include="Models\EventScope.cs" />
     <Compile Include="Models\FlairViewModel.cs" />
     <Compile Include="Models\IDinnerRepository.cs" />
     <Compile Include="Models\IRepository.cs" />

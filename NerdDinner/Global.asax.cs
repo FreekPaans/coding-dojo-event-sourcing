@@ -32,7 +32,7 @@ namespace NerdDinner
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);            
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            Database.SetInitializer<NerdDinners>(new CreateDatabaseIfNotExistsIncludingUniqueIndices());
+            Database.SetInitializer<NerdDinners>(new CreateDatabaseIfNotExistsIncludingIndicesAndUDFs());
         }
 
         void MvcApplication_PostAuthenticateRequest(object sender, EventArgs e)

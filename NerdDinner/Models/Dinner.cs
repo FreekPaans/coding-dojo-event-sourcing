@@ -97,69 +97,12 @@ namespace NerdDinner.Models {
             }
         }
 
-        private readonly List<Event> _publishedEvents = new List<Event>();
-
-        public ICollection<Event> RSVP(string name, string friendlyName) {
-            try {
-                if (IsUserRegistered(name)) {
-                    return new List<Event>();
-                }
-
-                var RSVPedEvent = new RSVPed {
-                    Name         = name,
-                    FriendlyName = friendlyName,
-                    DinnerId     = DinnerID
-                };
-
-                RaiseAndApply(RSVPedEvent);
-
-                return this._publishedEvents.ToList();
-            }
-            finally {
-                this._publishedEvents.Clear();
-            }
-        }
-
-		internal ICollection<Event> CancelRSVP(string userId) {
-			try {
-				if(!IsUserRegistered(userId)) {
-					return new Event[0];
-				}
-				var rsvpCanceled = new RSVPCanceled {
-                    Name = userId,
-                    DinnerId = DinnerID
-                };
-
-				RaiseAndApply(rsvpCanceled);
-				
-				return this._publishedEvents.ToList();
-			}
-			finally {
-				this._publishedEvents.Clear();
-			}	
-		}
-
-		internal ICollection<Event> ChangeAddress(string newAddress,string changedReason) {
-			try {
-				var addressChanged = new AddressChanged {
-					NewAddress = newAddress,
-					Reason = changedReason
-				};
-
-				RaiseAndApply(addressChanged);
-
-				return _publishedEvents.ToList();
-
-			}
-			finally {
-				this._publishedEvents.Clear();
-			}
-		}
+		
 
         private void RaiseAndApply(IEventData eventData) {
             var @event = MakeEvent(eventData);
             RaiseEvent(@event);
-            ApplyEvent(@event);
+            Apply(@event);
         }
 
         private Event MakeEvent(IEventData eventDataObject) {
@@ -173,13 +116,77 @@ namespace NerdDinner.Models {
         }
 
         private void RaiseEvent(Event e) {
-            _publishedEvents.Add(e);
+            EventScope.Raise(e);
             _currentEvent++;
         }
         
-        void ApplyEvent(Event e) {
+        void Apply(Event e) {
             ApplyEvent(e.AddEventType());
         }
+
+		
+
+        
+
+        public void Hydrate(ICollection<Event> events) {
+            foreach (var e in events.Where(e => e.AggregateEventSequence >= _currentEvent).OrderBy(e => e.AggregateEventSequence)) { 
+                if (e.AggregateEventSequence != _currentEvent) {
+                    throw new Exception("Unexpected event sequence");
+                }
+                Apply(e);
+                _currentEvent++;
+            }
+        }
+
+        public static ICollection<Dinner> HydrateAll(List<Dinner> dinners, List<Event> events) {
+            foreach (var dinner in dinners) {
+                dinner.Hydrate(events.Where(e => e.AggregateId == dinner.DinnerGuid).ToList());
+            }
+            return dinners;
+        }
+
+
+		public ICollection<Event> RSVP(string name, string friendlyName) {
+            return EventScope.Start(()=>{
+                if (IsUserRegistered(name)) {
+                    return;
+                }
+
+                var RSVPedEvent = new RSVPed {
+                    Name         = name,
+                    FriendlyName = friendlyName,
+                    DinnerId     = DinnerID
+                };
+
+                RaiseAndApply(RSVPedEvent);
+            });
+        }
+		
+		internal ICollection<Event> CancelRSVP(string userId) {
+			return EventScope.Start(()=>{
+				if(!IsUserRegistered(userId)) {
+					return;
+				}
+				var rsvpCanceled = new RSVPCanceled {
+                    Name = userId,
+                    DinnerId = DinnerID
+                };
+
+				RaiseAndApply(rsvpCanceled);
+			});	
+		}
+
+		internal ICollection<Event> ChangeAddress(string newAddress,string changedReason) {
+			return EventScope.Start(()=> {
+				var addressChanged = new AddressChanged {
+					NewAddress = newAddress,
+					Reason = changedReason
+				};
+
+				RaiseAndApply(addressChanged);
+			});
+		}
+
 
         void ApplyEvent(Event<RSVPed> @event) {
             var rsvp = new RSVP();
@@ -207,31 +214,7 @@ namespace NerdDinner.Models {
 				_eventHistory.Add(string.Format("{0} Address changed to: {1}",@event.DateTime,@event.Data.NewAddress));
 			}
         }
-
-        
-
-        public void Hydrate(ICollection<Event> events) {
-            foreach (var e in events.Where(e => e.AggregateEventSequence >= _currentEvent).OrderBy(e => e.AggregateEventSequence)) { 
-                if (e.AggregateEventSequence != _currentEvent) {
-                    throw new Exception("Unexpected event sequence");
-                }
-                ApplyEvent(e);
-                _currentEvent++;
-            }
-        }
-
-        public static ICollection<Dinner> HydrateAll(List<Dinner> dinners, List<Event> events) {
-            foreach (var dinner in dinners) {
-                dinner.Hydrate(events.Where(e => e.AggregateId == dinner.DinnerGuid).ToList());
-            }
-            return dinners;
-        }
-
-
-
-
-		
-	}
+    }
 
 
     public class LocationDetail {
