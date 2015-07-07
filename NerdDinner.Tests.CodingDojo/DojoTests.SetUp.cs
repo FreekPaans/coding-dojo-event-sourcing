@@ -35,6 +35,7 @@ namespace NerdDinner.Tests.CodingDojo
             var dbContext = new NerdDinners();
             dbContext.Database.ExecuteSqlCommand("TRUNCATE TABLE [Dinners]");
             dbContext.Database.ExecuteSqlCommand("TRUNCATE TABLE [Events]");
+			dbContext.Database.ExecuteSqlCommand("TRUNCATE TABLE [PopularDinners]");
 
             var testData = FakeDinnerData.CreateTestDinners();
 

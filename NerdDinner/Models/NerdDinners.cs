@@ -28,6 +28,7 @@ namespace NerdDinner.Models
         public DbSet<Dinner> Dinners { get; set; }
         
         public DbSet<Event> Events { get; set; }
+		public DbSet<PopularDinner>  PopularDinners{get;set;}
 
         readonly static List<Action<NerdDinners,Event>> _eventPublishedHandlers = new List<Action<NerdDinners,Event>>();
 

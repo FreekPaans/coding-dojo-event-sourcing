@@ -81,15 +81,31 @@ namespace NerdDinner.Controllers
                 limit = 40;
 
             // TODO Infi Coding Dojo: optimize this
-            var mostPopularDinners = from dinner in Dinner.HydrateAll(dinners.ToList(), dinnerRepository.AllEvents.ToList())
-                                     orderby dinner.RSVPs.Count descending
-                                     select dinner;
+            var mostPopularDinners = dinnerRepository.FindMostPopularDinners();
 
             var jsonDinners =
                 mostPopularDinners.Take(limit.Value).AsEnumerable()
                 .Select(item => JsonDinnerFromDinner(item));
 
             return Json(jsonDinners.ToList());
+        }
+
+		private JsonDinner JsonDinnerFromDinner(PopularDinner dinner)
+        {
+            return new JsonDinner
+            {
+                DinnerID = dinner.DinnerID,
+                EventDate = dinner.EventDate,
+                Latitude = dinner.Latitude,
+                Longitude = dinner.Longitude,
+                Title = dinner.Title,
+                Description = dinner.Description,
+                RSVPCount = dinner.RSVPCount,
+
+                //TODO: Need to mock this out for testing...
+                //Url = Url.RouteUrl("PrettyDetails", new { Id = dinner.DinnerID } )
+                Url = dinner.DinnerID.ToString()
+            };
         }
 
         private JsonDinner JsonDinnerFromDinner(Dinner dinner)

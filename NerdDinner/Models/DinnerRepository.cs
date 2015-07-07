@@ -103,5 +103,10 @@ namespace NerdDinner.Models {
         {
             db.SaveChanges();
         }
+
+		public IQueryable<PopularDinner> FindMostPopularDinners()
+        {
+            return db.PopularDinners.OrderByDescending(p => p.RSVPCount);
+        } 
     }
 }

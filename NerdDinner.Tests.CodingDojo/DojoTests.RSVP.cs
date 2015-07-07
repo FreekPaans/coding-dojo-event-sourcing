@@ -81,14 +81,6 @@ namespace NerdDinner.Tests.CodingDojo
         }
 
         [Test]
-        public void RSVP_Count_Shows_In_Popular_Dinners_List()
-        {
-            RSVPForDinner("scottha", 1);
-
-            AssertRSVPCountInPopularDinnersList("scottha", 1, expectedCount: 2);
-        }
-
-        [Test]
         public void An_RSVPed_Event_Is_Published_When_RSVPing() {
             RSVPForDinner("freek", 1);
 

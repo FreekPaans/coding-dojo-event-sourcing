@@ -18,11 +18,15 @@ namespace NerdDinner.Tests.CodingDojo
         {
             var testDinner = new Dinner { Title = "TestDinner", EventDate = new DateTime(2016, 1, 1), Description = "TestDinner Description", HostedBy = "scottha", HostedById = "scottha", ContactPhone = "0123456789", Address = "TestDinner Address", Country = "Europe" };
 
-            var controller = CreateDinnersControllerAs("scottha");
-            var result = controller.Create(testDinner);
-
-            return (int)GetRedirectResultRouteValues(result)["id"];
+			return CreateDinner(testDinner);
         }
+
+		private int CreateDinner(Dinner testDinner) {
+			var controller = CreateDinnersControllerAs("scottha");
+			var result = controller.Create(testDinner);
+
+			return (int)GetRedirectResultRouteValues(result)["id"];
+		}
 
         private void CancelRSVP(string userName, int dinnerId)
         {

@@ -79,6 +79,7 @@
     <Compile Include="DojoTests.Part3.cs" />
     <Compile Include="DojoTests.Part2.cs" />
     <Compile Include="DojoTests.Helpers.cs" />
+    <Compile Include="DojoTests.Part4PopularDinners.cs" />
     <Compile Include="DojoTests.RSVP.cs" />
     <Compile Include="DojoTests.Part1.cs" />
     <Compile Include="Fakes\FakeDinnerData.cs" />

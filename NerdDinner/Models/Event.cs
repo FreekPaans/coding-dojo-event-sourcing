@@ -32,6 +32,16 @@ namespace NerdDinner.Models {
 
             return instance;
         }
+
+		public static Event Make(IEventData eventData, Guid aggregateId, int eventSequence) {
+            return new Event {
+                AggregateId = aggregateId, 
+                AggregateEventSequence = eventSequence, 
+                DateTime = System.DateTime.UtcNow, 
+                EventType = eventData.GetType().FullName, 
+                Data = JsonConvert.SerializeObject(eventData)
+            };
+        }
     }  
 
     public class Event<T> : Event where T : IEventData {

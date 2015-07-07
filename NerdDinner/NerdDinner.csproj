@@ -169,6 +169,7 @@
     <Compile Include="Controllers\ServicesController.cs" />
     <Compile Include="Controllers\ViewSwitcherController.cs" />
     <Compile Include="Events\AddressChanged.cs" />
+    <Compile Include="Events\DinnerCreated.cs" />
     <Compile Include="Events\IEventData.cs" />
     <Compile Include="Events\RSVPCanceled.cs" />
     <Compile Include="Global.asax.cs">
@@ -197,6 +198,7 @@
     <Compile Include="Models\IRepository.cs" />
     <Compile Include="Models\NerdDinners.cs" />
     <Compile Include="Models\NerdIdentity.cs" />
+    <Compile Include="Models\PopularDinner.cs" />
     <Compile Include="Models\RSVP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\EmbeddedResourceUrlService.cs" />

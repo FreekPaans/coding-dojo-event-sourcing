@@ -214,7 +214,30 @@ namespace NerdDinner.Models {
 				_eventHistory.Add(string.Format("{0} Address changed to: {1}",@event.DateTime,@event.Data.NewAddress));
 			}
         }
-    }
+
+		internal ICollection<Event> Created() {
+            return EventScope.Start(()=>{
+                var created = new DinnerCreated {
+                    Address = Address,
+                    ContactPhone = ContactPhone,
+                    Country = Country,
+                    Description = Description,
+                    DinnerID = DinnerID,
+                    EventDate = EventDate,
+                    HostedBy = HostedBy,
+                    HostedById = HostedById,
+                    Latitude = Latitude,
+                    Longitude = Longitude,
+                    Title = Title
+                };
+                RaiseAndApply(created);
+            });
+		}
+
+		void ApplyEvent(Event<DinnerCreated> @event) {
+            
+        }
+	}
 
 
     public class LocationDetail {
